@@ -35,18 +35,21 @@ fn lcs(f1: &[String], f2: &[String]) -> Vec<Vec<usize>> {
 }
 
 fn print_diff(c: &Vec<Vec<usize>>, f1: &[String], f2: &[String], i: usize, j: usize) {
-    if i > 0 && j > 0 && f1[i - 1] == f2[j - 1] {
-        print_diff(c, f1, f2, i - 1, j - 1);
-        println!("{}", f1[i - 1]);
-    } else if j > 0 && (i == 0 || c[i][j - 1] >= c[i - 1][j]) {
-        print_diff(c, f1, f2, i, j - 1);
-        println!("> {}", f2[j - 1]);
-    } else if i > 0 && (j == 0 || c[i][j - 1] < c[i - 1][j]) {
-        print_diff(c, f1, f2, i - 1, j);
-        println!("< {}", f1[i - 1]);
-    } else {
-        println!();
-    }
+    match (i, j) {
+        (i, j) if i > 0 && j > 0 && f1[i - 1] == f2[j - 1] => {
+            print_diff(c, f1, f2, i - 1, j - 1);
+            println!("{}", f1[i - 1]);
+        },
+        (i, j) if j > 0 && (i == 0 || c[i][j - 1] >= c[i - 1][j]) => {
+            print_diff(c, f1, f2, i, j - 1);
+            println!("> {}", f2[j - 1]);
+        },
+        (i, j) if i > 0 && (j == 0 || c[i][j - 1] < c[i - 1][j]) => {
+            print_diff(c, f1, f2, i - 1, j);
+            println!("< {}", f1[i - 1]);
+        },
+        _ => println!(),
+    };
 }
 
 fn main() {
