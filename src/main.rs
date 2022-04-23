@@ -34,6 +34,7 @@ fn lcs(f1: &[String], f2: &[String]) -> Vec<Vec<usize>> {
     c
 }
 
+
 fn print_diff(c: &Vec<Vec<usize>>, f1: &[String], f2: &[String], i: usize, j: usize) {
     match (i, j) {
         (i, j) if i > 0 && j > 0 && f1[i - 1] == f2[j - 1] => {
