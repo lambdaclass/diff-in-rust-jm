@@ -17,41 +17,41 @@ fn read_file_lines(filename: String) -> Vec<String> {
     file.lines().map(|l| l.to_string()).collect()
 }
 
-/// Builds a grid with the largest common subsequence algorithm.
-fn lcs(f1: &[String], f2: &[String]) -> Vec<Vec<usize>> {
-    let m = &f1.len();
-    let n = &f2.len();
+/// Builds a grid with the longest common subsequence algorithm.
+fn longest_common_subsequence(file1: &[String], file2: &[String]) -> Vec<Vec<usize>> {
+    let file1_len = &file1.len();
+    let file2_len = &file2.len();
 
-    let mut c = vec![vec![0; *n + 1]; *m + 1];
+    let mut result_grid = vec![vec![0; *file2_len + 1]; *file1_len + 1];
 
-    for (i, f1_line) in f1.iter().enumerate() {
-        for (j, f2_line) in f2.iter().enumerate() {
+    for (i, f1_line) in file1.iter().enumerate() {
+        for (j, f2_line) in file2.iter().enumerate() {
             if f1_line == f2_line {
-                c[i + 1][j + 1] = c[i][j] + 1;
+                result_grid[i + 1][j + 1] = result_grid[i][j] + 1;
             } else {
-                c[i + 1][j + 1] = cmp::max(c[i + 1][j], c[i][j + 1])
+                result_grid[i + 1][j + 1] = cmp::max(result_grid[i + 1][j], result_grid[i][j + 1])
             }
         }
     }
 
-    c
+    result_grid
 }
 
 /// Prints out the difference between the two given vectors of strings, using their previously
 /// calculated largest common subsequence grid.
-fn print_diff(c: &Vec<Vec<usize>>, f1: &[String], f2: &[String], i: usize, j: usize) {
-    match (i, j) {
-        (i, j) if i > 0 && j > 0 && f1[i - 1] == f2[j - 1] => {
-            print_diff(c, f1, f2, i - 1, j - 1);
-            println!("{}", f1[i - 1]);
+fn print_diff(subsequence_coparison_grid: &Vec<Vec<usize>>, file1: &[String], file2: &[String], file1_iter: usize, file2_iter: usize) {
+    match (file1_iter, file2_iter) {
+        (file1_iter, file2_iter) if file1_iter > 0 && file2_iter > 0 && file1[file1_iter - 1] == file2[file2_iter - 1] => {
+            print_diff(subsequence_coparison_grid, file1, file2, file1_iter  - 1, file2_iter - 1);
+            println!("{}", file1[file1_iter  - 1]);
         },
-        (i, j) if j > 0 && (i == 0 || c[i][j - 1] >= c[i - 1][j]) => {
-            print_diff(c, f1, f2, i, j - 1);
-            println!("> {}", f2[j - 1]);
+        (file1_iter , file2_iter) if file2_iter > 0 && (file1_iter  == 0 || subsequence_coparison_grid[file1_iter ][file2_iter - 1] >= subsequence_coparison_grid[file1_iter  - 1][file2_iter]) => {
+            print_diff(subsequence_coparison_grid, file1, file2, file1_iter , file2_iter - 1);
+            println!("> {}", file2[file2_iter - 1]);
         },
-        (i, j) if i > 0 && (j == 0 || c[i][j - 1] < c[i - 1][j]) => {
-            print_diff(c, f1, f2, i - 1, j);
-            println!("< {}", f1[i - 1]);
+        (file1_iter , file2_iter) if file1_iter  > 0 && (file2_iter == 0 || subsequence_coparison_grid[file1_iter ][file2_iter - 1] < subsequence_coparison_grid[file1_iter  - 1][file2_iter]) => {
+            print_diff(subsequence_coparison_grid, file1, file2, file1_iter  - 1, file2_iter);
+            println!("< {}", file1[file1_iter  - 1]);
         },
         _ => println!(),
     };
@@ -59,9 +59,9 @@ fn print_diff(c: &Vec<Vec<usize>>, f1: &[String], f2: &[String], i: usize, j: us
 
 fn main() {
     let (filename1, filename2) = get_filenames();
-    let f1 = read_file_lines(filename1);
-    let f2 = read_file_lines(filename2);
-    let c = lcs(&f1, &f2);
+    let file1 = read_file_lines(filename1);
+    let file2 = read_file_lines(filename2);
+    let grid = longest_common_subsequence(&file1, &file2);
 
-    print_diff(&c, &f1, &f2, f1.len(), f2.len());
+    print_diff(&grid, &file1, &file2, file1.len(), file2.len());
 }
