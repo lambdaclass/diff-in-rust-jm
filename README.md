@@ -20,7 +20,7 @@ Good Morning,
 World!
 ```
 
-When `cargo run file1 file1` is executed, the output is:
+When `cargo run file1 file2` is executed, the output is:
 ```
 <Hello,
 >Good Morning,
