@@ -39,17 +39,17 @@ fn longest_common_subsequence(file1: &[String], file2: &[String]) -> Vec<Vec<usi
 
 /// Prints out the difference between the two given vectors of strings, using their previously
 /// calculated largest common subsequence grid.
-fn print_diff(subsequence_coparison_grid: &Vec<Vec<usize>>, file1: &[String], file2: &[String], file1_iter: usize, file2_iter: usize) {
+fn print_diff(subsequence_comparison_grid: &Vec<Vec<usize>>, file1: &[String], file2: &[String], file1_iter: usize, file2_iter: usize) {
     if file1_iter > 0 && file2_iter > 0 && file1[file1_iter - 1] == file2[file2_iter - 1] {
-        print_diff(subsequence_coparison_grid, file1, file2, file1_iter  - 1, file2_iter - 1);
+        print_diff(subsequence_comparison_grid, file1, file2, file1_iter  - 1, file2_iter - 1);
         println!("{}", file1[file1_iter  - 1]);
     } else
-    if file2_iter > 0 && (file1_iter  == 0 || subsequence_coparison_grid[file1_iter ][file2_iter - 1] >= subsequence_coparison_grid[file1_iter  - 1][file2_iter]) {
-        print_diff(subsequence_coparison_grid, file1, file2, file1_iter , file2_iter - 1);
+    if file2_iter > 0 && (file1_iter  == 0 || subsequence_comparison_grid[file1_iter ][file2_iter - 1] >= subsequence_comparison_grid[file1_iter  - 1][file2_iter]) {
+        print_diff(subsequence_comparison_grid, file1, file2, file1_iter , file2_iter - 1);
         println!("> {}", file2[file2_iter - 1]);
     } else
-    if file1_iter  > 0 && (file2_iter == 0 || subsequence_coparison_grid[file1_iter ][file2_iter - 1] < subsequence_coparison_grid[file1_iter  - 1][file2_iter]) {
-        print_diff(subsequence_coparison_grid, file1, file2, file1_iter  - 1, file2_iter);
+    if file1_iter  > 0 && (file2_iter == 0 || subsequence_comparison_grid[file1_iter ][file2_iter - 1] < subsequence_comparison_grid[file1_iter  - 1][file2_iter]) {
+        print_diff(subsequence_comparison_grid, file1, file2, file1_iter  - 1, file2_iter);
         println!("< {}", file1[file1_iter  - 1]);
     }
 }
