@@ -1,5 +1,6 @@
 use std::{cmp, env, fs};
 
+/// Gets the names of the files to be compared from the command line.
 fn get_filenames() -> (String, String) {
     let files: Vec<String> = env::args().collect();
 
@@ -10,11 +11,13 @@ fn get_filenames() -> (String, String) {
     (files[1].clone(), files[2].clone())
 }
 
+/// Reads the given file and outputs it line by line.
 fn read_file_lines(filename: String) -> Vec<String> {
     let file: String = fs::read_to_string(filename).expect("Couldn't read file ");
     file.lines().map(|l| l.to_string()).collect()
 }
 
+/// Builds a grid with the largest common subsequence algorithm.
 fn lcs(f1: &[String], f2: &[String]) -> Vec<Vec<usize>> {
     let m = &f1.len();
     let n = &f2.len();
@@ -34,6 +37,8 @@ fn lcs(f1: &[String], f2: &[String]) -> Vec<Vec<usize>> {
     c
 }
 
+/// Prints out the difference between the two given vectors of strings, using their previously
+/// calculated largest common subsequence grid.
 fn print_diff(c: &Vec<Vec<usize>>, f1: &[String], f2: &[String], i: usize, j: usize) {
     match (i, j) {
         (i, j) if i > 0 && j > 0 && f1[i - 1] == f2[j - 1] => {
