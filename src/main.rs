@@ -7,27 +7,19 @@ use std::{cmp, env, fs};
 /// with the symbols '<' for the first file, '>' for the second file or nothing if it's a
 /// coincidence.
 fn main() {
-    let (filename1, filename2) = get_filenames();
-    let file1 = read_file_lines(filename1);
-    let file2 = read_file_lines(filename2);
+    let files: Vec<String> = env::args().collect();
+    if files.len() < 3_usize {
+        panic!("Expected 2 arguments, got {}", files.len() - 1);
+    }
+    let file1 = read_file_lines(&files[1]);
+    let file2 = read_file_lines(&files[2]);
     let grid = longest_common_subsequence(&file1, &file2);
 
     print_diff(&grid, &file1, &file2, file1.len(), file2.len());
 }
 
-/// Gets the names of the files to be compared from the command line.
-fn get_filenames() -> (String, String) {
-    let files: Vec<String> = env::args().collect();
-
-    if files.len() < 3_usize {
-        panic!("Expected 2 arguments, got {}", files.len() - 1);
-    }
-
-    (files[1].clone(), files[2].clone())
-}
-
 /// Reads the given file and outputs it line by line.
-fn read_file_lines(filename: String) -> Vec<String> {
+fn read_file_lines(filename: &String) -> Vec<String> {
     let file: String = fs::read_to_string(filename).expect("Couldn't read file ");
     file.lines().map(|l| l.to_string()).collect()
 }
@@ -96,17 +88,47 @@ fn longest_common_subsequence(file1: &[String], file2: &[String]) -> Vec<Vec<usi
 /// moving the iteration to the max of this two values. If both values are smaller than the value
 /// at the current cell, this means a match was found and the iteration moves diagonally; while
 /// adding the string to the largest common subsequence.
-fn print_diff(subsequence_comparison_grid: &Vec<Vec<usize>>, file1: &[String], file2: &[String], file1_iter: usize, file2_iter: usize) {
+fn print_diff(
+    subsequence_comparison_grid: &Vec<Vec<usize>>,
+    file1: &[String],
+    file2: &[String],
+    file1_iter: usize,
+    file2_iter: usize,
+) {
     if file1_iter > 0 && file2_iter > 0 && file1[file1_iter - 1] == file2[file2_iter - 1] {
-        print_diff(subsequence_comparison_grid, file1, file2, file1_iter  - 1, file2_iter - 1);
-        println!("{}", file1[file1_iter  - 1]);
-    } else
-    if file2_iter > 0 && (file1_iter  == 0 || subsequence_comparison_grid[file1_iter ][file2_iter - 1] >= subsequence_comparison_grid[file1_iter  - 1][file2_iter]) {
-        print_diff(subsequence_comparison_grid, file1, file2, file1_iter , file2_iter - 1);
+        print_diff(
+            subsequence_comparison_grid,
+            file1,
+            file2,
+            file1_iter - 1,
+            file2_iter - 1,
+        );
+        println!("{}", file1[file1_iter - 1]);
+    } else if file2_iter > 0
+        && (file1_iter == 0
+            || subsequence_comparison_grid[file1_iter][file2_iter - 1]
+                >= subsequence_comparison_grid[file1_iter - 1][file2_iter])
+    {
+        print_diff(
+            subsequence_comparison_grid,
+            file1,
+            file2,
+            file1_iter,
+            file2_iter - 1,
+        );
         println!("> {}", file2[file2_iter - 1]);
-    } else
-    if file1_iter  > 0 && (file2_iter == 0 || subsequence_comparison_grid[file1_iter ][file2_iter - 1] < subsequence_comparison_grid[file1_iter  - 1][file2_iter]) {
-        print_diff(subsequence_comparison_grid, file1, file2, file1_iter  - 1, file2_iter);
-        println!("< {}", file1[file1_iter  - 1]);
+    } else if file1_iter > 0
+        && (file2_iter == 0
+            || subsequence_comparison_grid[file1_iter][file2_iter - 1]
+                < subsequence_comparison_grid[file1_iter - 1][file2_iter])
+    {
+        print_diff(
+            subsequence_comparison_grid,
+            file1,
+            file2,
+            file1_iter - 1,
+            file2_iter,
+        );
+        println!("< {}", file1[file1_iter - 1]);
     }
 }
