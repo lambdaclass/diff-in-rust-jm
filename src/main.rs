@@ -3,7 +3,7 @@ use std::{cmp, env, fs};
 /// The program gets the two files it will process from the command line.
 /// Then it applies the longest_common_subsequence function. This function creates a table of
 /// comparisons that eventually gives print_diff a path to follow when printing. While following
-/// this path, print_diff will let us know how the two files differ and coincide. This is shown
+/// this path, print_diff will let us know how the two files coincide and differ from each other. This is shown
 /// with the symbols '<' for the first file, '>' for the second file or nothing if it's a
 /// coincidence.
 fn main() {
